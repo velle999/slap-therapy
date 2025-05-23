@@ -13,6 +13,7 @@
       padding: 0;
       height: 100vh;
       overflow: hidden;
+      touch-action: none; /* Prevent browser gestures */
     }
     #container {
       width: 800px;
@@ -27,6 +28,7 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      touch-action: none;
     }
     #slapImg {
       cursor: pointer;
@@ -35,6 +37,7 @@
       transition: transform 0.07s cubic-bezier(.5,2.2,.5,.8);
       user-select: none;
       image-rendering: pixelated;
+      touch-action: none;
     }
     #slapImg.slap {
       transform: scale(0.85) rotate(-7deg);
@@ -70,14 +73,65 @@
       letter-spacing: 2px;
       text-shadow: 0 2px 12px #000b;
     }
+    /* New style for the menu */
+    #menu {
+      display: flex;
+      justify-content: center;
+      gap: 36px;
+      margin-bottom: 28px;
+      margin-top: -10px;
+    }
+    .menu-btn {
+      background: #333;
+      color: #ffcf40;
+      border: 2.2px solid #ff5b14;
+      border-radius: 13px;
+      font-size: 1.28em;
+      font-family: monospace;
+      padding: 12px 34px;
+      cursor: pointer;
+      margin: 0 7px;
+      box-shadow: 0 1.5px 7px #111a;
+      transition: background 0.17s, color 0.13s, border 0.18s;
+      user-select: none;
+    }
+    .menu-btn.selected {
+      background: #ffcf40;
+      color: #232323;
+      border-color: #ff0000;
+      box-shadow: 0 1.5px 12px #ff9d36aa;
+    }
+    #faceLabel {
+      font-size: 1.26em;
+      color: #fca652;
+      margin-bottom: 9px;
+      margin-top: -15px;
+      letter-spacing: 1px;
+      font-weight: bold;
+      background: #231d16;
+      border-radius: 12px;
+      padding: 4px 22px;
+      display: inline-block;
+      box-shadow: 0 2px 7px #321c05b0;
+    }
   </style>
 </head>
 <body>
   <img src="hand.png" id="slapCursor" alt="" draggable="false">
+
   <div id="container">
     <h1>🖐️ SLAP THERAPY 🖐️</h1>
+
+    <!-- MENU START -->
+    <div id="menu">
+      <button class="menu-btn selected" id="elmoBtn">Elmo</button>
+      <button class="menu-btn" id="cheetoBtn">Cheeto</button>
+    </div>
+    <div id="faceLabel">Elmo</div>
+    <!-- MENU END -->
+
     <img 
-      src="dumbass.jpg"
+      src="dumbass.png"
       alt="Slap Me!"
       id="slapImg"
       draggable="false"
@@ -89,37 +143,82 @@
     const slapImg = document.getElementById('slapImg');
     const counter = document.getElementById('counter');
     const slapSound = document.getElementById('slapSound');
+    const slapCursor = document.getElementById('slapCursor');
     let slaps = 0;
 
-    slapImg.addEventListener('pointerdown', () => {
+    // Face selection logic
+    const faces = [
+      { name: 'Elmo', file: 'dumbass.png', btn: 'elmoBtn' },
+      { name: 'Cheeto', file: 'dumbass.jpg', btn: 'cheetoBtn' }
+    ];
+    let currentFace = 0;
+    const faceLabel = document.getElementById('faceLabel');
+
+    faces.forEach((face, idx) => {
+      document.getElementById(face.btn).onclick = () => {
+        currentFace = idx;
+        slapImg.src = face.file;
+        faceLabel.textContent = face.name;
+        // Update selected style
+        faces.forEach((f, i) => {
+          document.getElementById(f.btn).classList.toggle('selected', i === idx);
+        });
+      };
+    });
+
+    function slapAction(e) {
       slaps++;
       counter.textContent = `Total Slaps: ${slaps}`;
       slapImg.classList.add('slap');
       slapSound.currentTime = 0;
       slapSound.play();
       setTimeout(() => slapImg.classList.remove('slap'), 120);
-    });
+      if (e && e.cancelable) e.preventDefault();
+    }
 
-    // Prevent dragging the image (accidentally) on desktop
+    // MOUSE CONTROLS
+    slapImg.addEventListener('pointerdown', slapAction);
     slapImg.addEventListener('dragstart', e => e.preventDefault());
-
-    // Slap Cursor movement
-    const slapCursor = document.getElementById('slapCursor');
-
-    // Show/hide the cursor on mouse enter/leave
     document.body.addEventListener('mouseenter', () => slapCursor.style.display = 'block');
     document.body.addEventListener('mouseleave', () => slapCursor.style.display = 'none');
-
-    // Track mouse and move hand
     document.addEventListener('mousemove', (e) => {
-      // Offset so the palm lines up with the pointer.
-      const offsetX = 110; // half of hand cursor width (220px)
-      const offsetY = 120; // place the palm about where your mouse is
+      const offsetX = 110;
+      const offsetY = 120;
+      slapCursor.style.display = 'block';
       slapCursor.style.transform = `translate(${e.clientX - offsetX}px, ${e.clientY - offsetY}px)`;
     });
-
-    // Hide the system cursor for full effect
     document.body.style.cursor = 'none';
+
+    // TOUCH CONTROLS
+    document.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      const offsetX = 110;
+      const offsetY = 120;
+      slapCursor.style.display = 'block';
+      slapCursor.style.transform = `translate(${touch.clientX - offsetX}px, ${touch.clientY - offsetY}px)`;
+      if (e.target === slapImg) slapAction(e);
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      const offsetX = 110;
+      const offsetY = 120;
+      slapCursor.style.display = 'block';
+      slapCursor.style.transform = `translate(${touch.clientX - offsetX}px, ${touch.clientY - offsetY}px)`;
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('touchend', e => {
+      slapCursor.style.display = 'none';
+      if (e.target === slapImg) slapAction(e);
+    });
+
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
   </script>
 </body>
 </html>
