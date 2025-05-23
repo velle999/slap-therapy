@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slap Therapy</title>
+  <style>
+    html, body {
+      background: #222;
+      color: #fff;
+      font-family: monospace;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #container {
+      width: 800px;
+      height: 600px;
+      margin: 0 auto;
+      margin-top: calc(50vh - 300px);
+      background: #292929;
+      border-radius: 36px;
+      box-shadow: 0 8px 40px #000c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    #slapImg {
+      cursor: pointer;
+      width: 420px;
+      max-width: 90%;
+      transition: transform 0.07s cubic-bezier(.5,2.2,.5,.8);
+      user-select: none;
+      image-rendering: pixelated;
+    }
+    #slapImg.slap {
+      transform: scale(0.85) rotate(-7deg);
+      filter: brightness(1.5) saturate(2);
+    }
+    #counter {
+      font-size: 2.2em;
+      margin-top: 32px;
+      letter-spacing: 1px;
+      background: #333;
+      border-radius: 18px;
+      padding: 14px 60px;
+      box-shadow: 0 2px 12px #0c0c0c88;
+      display: inline-block;
+    }
+    #slapCursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      width: 220px;
+      height: auto;
+      left: 0; top: 0;
+      transition: transform 0.02s;
+      will-change: transform;
+      user-select: none;
+      display: none;
+      image-rendering: pixelated;
+    }
+    h1 {
+      font-size: 2.6em;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 12px #000b;
+    }
+  </style>
+</head>
+<body>
+  <img src="hand.png" id="slapCursor" alt="" draggable="false">
+  <div id="container">
+    <h1>🖐️ SLAP THERAPY 🖐️</h1>
+    <img 
+      src="dumbass.jpg"
+      alt="Slap Me!"
+      id="slapImg"
+      draggable="false"
+    >
+    <div id="counter">Total Slaps: 0</div>
+  </div>
+  <audio id="slapSound" src="slap.mp3"></audio>
+  <script>
+    const slapImg = document.getElementById('slapImg');
+    const counter = document.getElementById('counter');
+    const slapSound = document.getElementById('slapSound');
+    let slaps = 0;
+
+    slapImg.addEventListener('pointerdown', () => {
+      slaps++;
+      counter.textContent = `Total Slaps: ${slaps}`;
+      slapImg.classList.add('slap');
+      slapSound.currentTime = 0;
+      slapSound.play();
+      setTimeout(() => slapImg.classList.remove('slap'), 120);
+    });
+
+    // Prevent dragging the image (accidentally) on desktop
+    slapImg.addEventListener('dragstart', e => e.preventDefault());
+
+    // Slap Cursor movement
+    const slapCursor = document.getElementById('slapCursor');
+
+    // Show/hide the cursor on mouse enter/leave
+    document.body.addEventListener('mouseenter', () => slapCursor.style.display = 'block');
+    document.body.addEventListener('mouseleave', () => slapCursor.style.display = 'none');
+
+    // Track mouse and move hand
+    document.addEventListener('mousemove', (e) => {
+      // Offset so the palm lines up with the pointer.
+      const offsetX = 110; // half of hand cursor width (220px)
+      const offsetY = 120; // place the palm about where your mouse is
+      slapCursor.style.transform = `translate(${e.clientX - offsetX}px, ${e.clientY - offsetY}px)`;
+    });
+
+    // Hide the system cursor for full effect
+    document.body.style.cursor = 'none';
+  </script>
+</body>
+</html>
