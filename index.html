@@ -2,62 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Slap Therapy</title>
   <style>
     html, body {
+      margin: 0;
+      padding: 0;
       background: #222;
       color: #fff;
       font-family: monospace;
       text-align: center;
-      margin: 0;
-      padding: 0;
       height: 100vh;
       overflow: hidden;
-      touch-action: none; /* Prevent browser gestures */
+      touch-action: none;
     }
+
     #container {
-      width: 800px;
-      height: 600px;
-      margin: 0 auto;
-      margin-top: calc(50vh - 300px);
+      width: 90vw;
+      max-width: 800px;
+      margin: 5vh auto;
       background: #292929;
       border-radius: 36px;
       box-shadow: 0 8px 40px #000c;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      touch-action: none;
+      padding: 2vh 2vw;
+      box-sizing: border-box;
     }
+
+    h1 {
+      font-size: 2.6em;
+      margin: 20px 0 30px;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 12px #000b;
+    }
+
+    #menu {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      touch-action: auto;
+      z-index: 1;
+    }
+
+    .menu-btn {
+      font-size: 1.1em;
+      background: #444;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 14px;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 10px #0006;
+      transition: background 0.2s;
+    }
+
+    .menu-btn:hover {
+      background: #666;
+    }
+
     #slapImg {
       cursor: pointer;
-      width: 420px;
-      max-width: 90%;
+      width: 70vw;
+      max-width: 420px;
       transition: transform 0.07s cubic-bezier(.5,2.2,.5,.8);
       user-select: none;
       image-rendering: pixelated;
       touch-action: none;
     }
+
     #slapImg.slap {
       transform: scale(0.85) rotate(-7deg);
       filter: brightness(1.5) saturate(2);
     }
+
     #counter {
-      font-size: 2.2em;
-      margin-top: 32px;
-      letter-spacing: 1px;
+      font-size: 2em;
+      margin-top: 24px;
       background: #333;
       border-radius: 18px;
-      padding: 14px 60px;
+      padding: 12px 40px;
       box-shadow: 0 2px 12px #0c0c0c88;
       display: inline-block;
     }
+
     #slapCursor {
       position: fixed;
       pointer-events: none;
       z-index: 9999;
-      width: 220px;
+      width: 30vw;
+      max-width: 220px;
       height: auto;
       left: 0; top: 0;
       transition: transform 0.02s;
@@ -66,148 +103,115 @@
       display: none;
       image-rendering: pixelated;
     }
-    h1 {
-      font-size: 2.6em;
-      margin-top: 20px;
-      margin-bottom: 30px;
-      letter-spacing: 2px;
-      text-shadow: 0 2px 12px #000b;
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+      }
+      .menu-btn {
+        font-size: 1em;
+        padding: 10px 20px;
+      }
+      #counter {
+        font-size: 1.4em;
+        padding: 10px 30px;
+      }
     }
-    /* New style for the menu */
-    #menu {
-      display: flex;
-      justify-content: center;
-      gap: 36px;
-      margin-bottom: 28px;
-      margin-top: -10px;
-    }
-    .menu-btn {
-      background: #333;
-      color: #ffcf40;
-      border: 2.2px solid #ff5b14;
-      border-radius: 13px;
-      font-size: 1.28em;
-      font-family: monospace;
-      padding: 12px 34px;
-      cursor: pointer;
-      margin: 0 7px;
-      box-shadow: 0 1.5px 7px #111a;
-      transition: background 0.17s, color 0.13s, border 0.18s;
-      user-select: none;
-    }
-    .menu-btn.selected {
-      background: #ffcf40;
-      color: #232323;
-      border-color: #ff0000;
-      box-shadow: 0 1.5px 12px #ff9d36aa;
-    }
-    #faceLabel {
-      font-size: 1.26em;
-      color: #fca652;
-      margin-bottom: 9px;
-      margin-top: -15px;
-      letter-spacing: 1px;
-      font-weight: bold;
-      background: #231d16;
-      border-radius: 12px;
-      padding: 4px 22px;
-      display: inline-block;
-      box-shadow: 0 2px 7px #321c05b0;
+
+    @media (max-width: 400px) {
+      #menu {
+        flex-direction: column;
+        gap: 12px;
+      }
     }
   </style>
 </head>
 <body>
   <img src="hand.png" id="slapCursor" alt="" draggable="false">
-
   <div id="container">
     <h1>🖐️ SLAP THERAPY 🖐️</h1>
-
-    <!-- MENU START -->
     <div id="menu">
-      <button class="menu-btn selected" id="elmoBtn">Elmo</button>
-      <button class="menu-btn" id="cheetoBtn">Cheeto</button>
+      <button class="menu-btn" data-img="dumbass.png">👶 Elmo</button>
+      <button class="menu-btn" data-img="dumbass.jpg">🍊 Cheeto</button>
     </div>
-    <div id="faceLabel">Elmo</div>
-    <!-- MENU END -->
-
-    <img 
-      src="dumbass.png"
-      alt="Slap Me!"
-      id="slapImg"
-      draggable="false"
-    >
+    <img src="dumbass.png" alt="Slap Me!" id="slapImg" draggable="false">
     <div id="counter">Total Slaps: 0</div>
   </div>
-  <audio id="slapSound" src="slap.mp3"></audio>
+  <audio id="slapSound" src="slap.mp3" preload="auto"></audio>
+
   <script>
     const slapImg = document.getElementById('slapImg');
     const counter = document.getElementById('counter');
     const slapSound = document.getElementById('slapSound');
     const slapCursor = document.getElementById('slapCursor');
+    const buttons = document.querySelectorAll('.menu-btn');
     let slaps = 0;
 
-    // Face selection logic
-    const faces = [
-      { name: 'Elmo', file: 'dumbass.png', btn: 'elmoBtn' },
-      { name: 'Cheeto', file: 'dumbass.jpg', btn: 'cheetoBtn' }
-    ];
-    let currentFace = 0;
-    const faceLabel = document.getElementById('faceLabel');
-
-    faces.forEach((face, idx) => {
-      document.getElementById(face.btn).onclick = () => {
-        currentFace = idx;
-        slapImg.src = face.file;
-        faceLabel.textContent = face.name;
-        // Update selected style
-        faces.forEach((f, i) => {
-          document.getElementById(f.btn).classList.toggle('selected', i === idx);
-        });
-      };
-    });
-
     function slapAction(e) {
+      if (e.target.closest('#menu')) return;
+
       slaps++;
       counter.textContent = `Total Slaps: ${slaps}`;
       slapImg.classList.add('slap');
-      slapSound.currentTime = 0;
-      slapSound.play();
+
+      // Clone audio for rapid slap support
+      const sound = slapSound.cloneNode();
+      sound.play();
+
       setTimeout(() => slapImg.classList.remove('slap'), 120);
       if (e && e.cancelable) e.preventDefault();
     }
 
-    // MOUSE CONTROLS
+    // Face selector
+    buttons.forEach(btn => {
+      btn.addEventListener('pointerdown', (e) => {
+        slapImg.src = btn.dataset.img;
+        e.stopPropagation();
+      });
+    });
+
+    // Mouse slap + hand tracking
     slapImg.addEventListener('pointerdown', slapAction);
     slapImg.addEventListener('dragstart', e => e.preventDefault());
-    document.body.addEventListener('mouseenter', () => slapCursor.style.display = 'block');
-    document.body.addEventListener('mouseleave', () => slapCursor.style.display = 'none');
+
     document.addEventListener('mousemove', (e) => {
-      const offsetX = 110;
-      const offsetY = 120;
+      const offsetX = slapCursor.offsetWidth / 2;
+      const offsetY = slapCursor.offsetHeight / 2;
       slapCursor.style.display = 'block';
       slapCursor.style.transform = `translate(${e.clientX - offsetX}px, ${e.clientY - offsetY}px)`;
     });
+
+    document.body.addEventListener('mouseenter', () => slapCursor.style.display = 'block');
+    document.body.addEventListener('mouseleave', () => slapCursor.style.display = 'none');
     document.body.style.cursor = 'none';
 
-    // TOUCH CONTROLS
+    // Touch support
     document.addEventListener('touchstart', e => {
       const touch = e.touches[0];
       if (!touch) return;
-      const offsetX = 110;
-      const offsetY = 120;
+
+      const offsetX = slapCursor.offsetWidth / 2;
+      const offsetY = slapCursor.offsetHeight / 2;
       slapCursor.style.display = 'block';
       slapCursor.style.transform = `translate(${touch.clientX - offsetX}px, ${touch.clientY - offsetY}px)`;
-      if (e.target === slapImg) slapAction(e);
+
+      if (e.target === slapImg) {
+        slapAction(e);
+      }
+
       e.preventDefault();
     }, { passive: false });
 
     document.addEventListener('touchmove', e => {
       const touch = e.touches[0];
       if (!touch) return;
-      const offsetX = 110;
-      const offsetY = 120;
+
+      const offsetX = slapCursor.offsetWidth / 2;
+      const offsetY = slapCursor.offsetHeight / 2;
       slapCursor.style.display = 'block';
       slapCursor.style.transform = `translate(${touch.clientX - offsetX}px, ${touch.clientY - offsetY}px)`;
+
       e.preventDefault();
     }, { passive: false });
 
@@ -216,9 +220,7 @@
       if (e.target === slapImg) slapAction(e);
     });
 
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
-    });
+    document.addEventListener('gesturestart', e => e.preventDefault());
   </script>
 </body>
 </html>
